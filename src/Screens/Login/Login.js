@@ -80,7 +80,7 @@ const Login = ({ navigation }) => {
       <View style={Style.bottomLayout}>
         <Text style={Style.headerText}>Đăng nhập</Text>
         <TextInput
-          type="text"
+          keyboardType='number-pad'
           placeholder='Số điện thoại...'
           placeholderTextColor={'#EFE3C8'}
           style={Style.input}

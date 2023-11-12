@@ -2,8 +2,12 @@ import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
     container: {
+        width: '100%',
+        height: '100%',
+        padding: 10,
+        paddingTop: 15,
         backgroundColor: '#201520',
-        paddingHorizontal: 15,
+        alignItems: 'center',
     },
     // Top layout
     topLayout: {

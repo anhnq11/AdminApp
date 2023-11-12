@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View, Alert, ToastAndroid } from 'react-native'
 import React from 'react'
 import { useState, useEffect } from 'react';
-import URL from '../../../UrlApi';
+import URL from '../../../../UrlApi';
 import axios from 'axios';
 import { Dropdown } from 'react-native-element-dropdown';
 
@@ -110,7 +110,8 @@ const EditUser = ({ route, navigation }) => {
                 placeholderStyle={styles.receive_add_2}
                 selectedTextStyle={styles.receive_add_2}
                 inputSearchStyle={styles.receive_add_2}
-                iconStyle={styles.iconStyle}
+                itemTextStyle={styles.item_text}
+                iconColor='#EFE3C8'
                 data={listRoles}
                 maxHeight={300}
                 labelField="name"
@@ -164,9 +165,10 @@ const styles = StyleSheet.create({
         width: '90%',
         margin: 16,
         height: 50,
-        borderBottomColor: 'gray',
-        borderBottomWidth: 0.5,
-        backgroundColor: '#201520'
+        borderColor: '#EFE3C8',
+        borderWidth: 1,
+        borderRadius: 10,
+        paddingHorizontal: 15
     },
     bottomLayout: {
         width: '100%',
@@ -188,5 +190,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 25,
         color: '#201520'
+    },
+    item_text: {
+        fontSize: 19,
+        color: '#201520',
     }
 })

@@ -1,52 +1,49 @@
 import { View, Text, Image, ScrollView, FlatList, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { useState, useEffect } from 'react';
 import { Dimensions } from 'react-native';
 import { useSelector } from 'react-redux';
 import { selectUser } from '../../../Redux/Reducer/Reducer';
 
-import Style from './HomeStyle'
+import Style from './User/UserStyle'
 import logoImg from '../../../../assets/png/image2.png';
-import URL from '../../../UrlApi';
-import axios from 'axios';
 let windowWidth = Dimensions.get('window').width;
 
 const Home = ({ navigation }) => {
   const user = useSelector(selectUser);
 
-  const [listUsers, setListUsers] = useState([])
-
-  const getListUsers = () => {
-    axios({
-      method: 'get',
-      url: `${URL}users/users`,
-    }).then((res) => {
-      if (res.status === 200) {
-        setListUsers(res.data)
-      }
-    }).catch((err) => {
-      console.log(err);
-    });
-  }
-
-  React.useEffect(() => {
-    const tabPress = navigation.addListener('tabPress', (e) => {
-      getListUsers();
-    });
-
-    getListUsers();
-
-    return tabPress;
-  }, [navigation]);
+  const data = [
+    {
+      name: 'Tài khoản',
+      image: 'https://th.bing.com/th/id/R.128c99ebdee725b9e1c3c0390d98cd47?rik=9reRVopQkBduLg&riu=http%3a%2f%2fsimpleicon.com%2fdev%2fwp-content%2fuploads%2fmulty-user-256x256.png&ehk=Gw8vowbXpNWwiV2Vshi19CY72aO0rhLhkBfOPzqHpHc%3d&risl=&pid=ImgRaw&r=0',
+      navName: 'Users'
+    },
+    {
+      name: 'Đơn hàng',
+      image: 'https://cdn3.iconfinder.com/data/icons/rounded-monosign/142/invoice-1024.png',
+      navName: 'Invoices',
+    },
+    {
+      name: 'Sản phẩm',
+      image: 'https://th.bing.com/th/id/R.9747b37944b9692866892f0ce4788e09?rik=F%2fdIcjKlwvXy0Q&pid=ImgRaw&r=0',
+      navName: 'Products'
+    },
+    {
+      name: 'Thể loại',
+      image: 'https://static.thenounproject.com/png/524455-200.png',
+      navName: 'Categories'
+    }
+  ]
 
   return (
     <SafeAreaView>
       <View style={[Style.container, { width: windowWidth, height: '100%' }]} >
         <View>
           <FlatList
-            data={listUsers}
-            keyExtractor={(item) => item._id}
-            key={(item => item._id)}
+            data={data}
+            keyExtractor={(item) => item.navName}
+            key={(item => item.navName)}
+            numColumns={2}
+            horizontal={false}
             ListHeaderComponent={
               <View style={Style.topLayout} >
                 {/* Left layout */}
@@ -60,7 +57,7 @@ const Home = ({ navigation }) => {
                 <View style={Style.rightLayout} >
                   <View style={Style.imgAvatar} >
                     {
-                      user.imagae ? (
+                      user.image ? (
                         <Image style={{ width: '100%', height: '100%', resizeMode: 'cover' }} source={{ uri: user.image }} />
                       ) : (
                         <Image style={{ width: '100%', height: '100%', resizeMode: 'cover' }} source={{ uri: 'https://th.bing.com/th/id/OIP.4NKHCiIt5eVTkmhWokCqJAHaHa?pid=ImgDet&w=640&h=640&rs=1' }} />
@@ -71,53 +68,33 @@ const Home = ({ navigation }) => {
               </View>
             }
             renderItem={({ item }) =>
-            <View style={{
-              width: '100%',
-              flexDirection: 'row',
-              alignItems: 'center',
-              borderBottomWidth: 1,
-              borderStyle: 'dotted',
-              borderColor: '#EFE3C8',
-              justifyContent: 'center',
-            }}>
-              <Image style={{
-                width: 70, 
-                height: 70, 
-                borderRadius: 10,
-                resizeMode: 'contain',
-                 marginRight: 15
-              }} 
-              source={{ uri: item.image ? 
-              item.image : 
-              'https://th.bing.com/th/id/OIP.4NKHCiIt5eVTkmhWokCqJAHaHa?pid=ImgDet&w=640&h=640&rs=1'}}/>
-              <View style={{
-                width: '75%',
-                marginBottom: 10,
-                paddingBottom: 5
-              }}>
+              <TouchableOpacity style={{
+                width: '47%',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#EFE3C8',
+                marginRight: 15,
+                marginBottom: 15,
+                borderRadius: 15,
+                padding: 10
+              }}
+              onPress={() => { navigation.navigate(item.navName)}}
+              >
+                <Image style={{
+                  width: 70,
+                  height: 70,
+                  resizeMode: 'contain',
+                  tintColor: '#201520'
+                }}
+                  source={{
+                    uri: item.image
+                  }} />
                 <Text style={{
-                  color: '#EFE3C8',
-                  fontSize: 18,
+                  color: '#201520',
+                  fontSize: 20,
                   fontWeight: 'bold',
-                }}>{item.fullname}</Text>
-                <Text style={styles.receive_add}>{item.email ? (item.email + ' - ') : (null)}{item.phonenum}</Text>
-                <View style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between'
-                }}>
-                  <Text style={{
-                    color: 'green',
-                    fontSize: 17,
-                  }}>{item.id_role.name}</Text>
-                  <TouchableOpacity onPress={() =>
-                    navigation.navigate('EditUser', { data: item, user: user })
-                  }>
-                    <Text style={{ color: '#EFE3C8', fontSize: 16, fontStyle: 'italic' }}>Chi tiết {'>'}</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
+                }}>{item.name}</Text>
+              </TouchableOpacity>
             }
           />
         </View>
