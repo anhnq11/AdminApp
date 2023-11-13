@@ -30,7 +30,7 @@ const Home = ({ navigation }) => {
     {
       name: 'Thể loại',
       image: 'https://static.thenounproject.com/png/524455-200.png',
-      navName: 'Categories'
+      navName: 'Cats'
     }
   ]
 

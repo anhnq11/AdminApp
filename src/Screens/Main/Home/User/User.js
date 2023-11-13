@@ -1,4 +1,4 @@
-import { View, Text, Image, FlatList, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, Image, FlatList, SafeAreaView, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import React from 'react'
 import { useState } from 'react';
 import { Dimensions } from 'react-native';
@@ -114,6 +114,32 @@ const Users = ({ navigation }) => {
                             </View>
                         }
                     />
+                    <TouchableOpacity style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: 50,
+                        backgroundColor: '#EFE3C8',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        position: 'absolute',
+                        bottom: 5,
+                        right: 5
+                    }}
+                        onPress={() => {
+                            if (user.id_role.level == 1){
+                                navigation.navigate('AddUser')
+                            }
+                            else{
+                                Alert.alert('Thông báo', 'Bạn không có quyền thực hiện thao tác này!')
+                            }
+                        }}
+                    >
+                        <Image style={{
+                            width: 35,
+                            height: 35,
+                            tintColor: '#201520'
+                        }} source={{ uri: 'https://aux2.iconspalace.com/uploads/plus-icon-256.png' }} />
+                    </TouchableOpacity>
                 </View>
             </View>
         </SafeAreaView>

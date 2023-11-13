@@ -12,6 +12,8 @@ import EditUser from './src/Screens/Main/Home/User/EditUser';
 import Users from './src/Screens/Main/Home/User/User';
 import Invoices from './src/Screens/Main/Home/Invoices/Invoices';
 import InvoicesDetails from './src/Screens/Main/Home/Invoices/InvoicesDetails';
+import Cats from './src/Screens/Main/Home/Cats/Cats';
+import AddUser from './src/Screens/Main/Home/User/AddUser';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,8 +30,10 @@ function App(): JSX.Element {
           <Stack.Screen name="MainScr" component={BottomTabNav} options={{ headerShown: false }} />
           <Stack.Screen name="Users" component={Users} options={{ headerShown: false }} />
           <Stack.Screen name="EditUser" component={EditUser} options={{ headerShown: false }} />
+          <Stack.Screen name="AddUser" component={AddUser} options={{ headerShown: false }} />
           <Stack.Screen name="Invoices" component={Invoices} options={{ headerShown: false }} />
           <Stack.Screen name="InvoicesDetails" component={InvoicesDetails} options={{ headerShown: false }} />
+          <Stack.Screen name="Cats" component={Cats} options={{ headerShown: false }} />
 
         </Stack.Navigator>
       </NavigationContainer>

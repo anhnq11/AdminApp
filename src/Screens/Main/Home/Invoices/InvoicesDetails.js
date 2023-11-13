@@ -1,4 +1,4 @@
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, FlatList, Image, StyleSheet, Text, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { useState, useEffect } from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -25,12 +25,59 @@ const InvoicesDetails = ({ route, navigation }) => {
         });
     }
 
+    const updateFunction = async (status) => {
+        await axios({
+            method: 'post',
+            url: `${URL}products/invoicesStatus`,
+            data: {
+                _id: data._id,
+                status: status
+            }
+        })
+            .then((res) => {
+                if (res.status == 200) {
+                    ToastAndroid.show('Cập nhật trạng thái đơn hàng thành công!', ToastAndroid.SHORT)
+                    navigation.navigate('MainScr', { screen: 'Home' });
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }
+
     const update = () => {
-        console.log(status ,' - ', newStatus);
+        if (newStatus.status <= status.status) {
+            Alert.alert('Thông báo', 'Không thể thực hiện thao tác này!')
+        }
+        else {
+            Alert.alert('Thông báo', 'Bạn chắc chắn muốn cập nhật cho đơn hàng này?', [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'OK',
+                    onPress: () => {
+                        updateFunction(newStatus._id)
+                    }
+                }
+            ])
+        }
     }
 
     const cancel = () => {
-        console.log('Cancel');
+        Alert.alert('Thông báo', 'Bạn chắc chắn muốn huỷ đơn hàng này?', [
+            {
+                text: 'Cancel',
+                style: 'cancel',
+            },
+            {
+                text: 'OK',
+                onPress: () => {
+                    updateFunction(listStatus[listStatus.length - 1]._id)
+                }
+            }
+        ])
     }
 
     React.useEffect(() => {
@@ -114,43 +161,51 @@ const InvoicesDetails = ({ route, navigation }) => {
                                 fontWeight: 'bold'
                             }}>{(data.totalAmount).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')} VNĐ</Text>
                         </View>
-                        <Text style={{
-                            color: '#EFE3C8',
-                            fontSize: 21,
-                            fontWeight: 'bold',
-                            marginTop: 10
-                        }}>
-                            Cập nhật trạng thái
-                        </Text>
-                        <Dropdown
-                            style={styles.dropdown}
-                            placeholderStyle={styles.receive_add_2}
-                            selectedTextStyle={styles.receive_add_2}
-                            inputSearchStyle={styles.receive_add_2}
-                            itemTextStyle={styles.item_text}
-                            iconColor='#EFE3C8'
-                            data={listStatus}
-                            maxHeight={300}
-                            labelField="name"
-                            valueField="_id"
-                            placeholder="Chọn trạng thái"
-                            value={status._id}
-                            onChange={item => {
-                                setNewStatus(item)
-                            }}
-                        />
-                        <View style={styles.bottomLayout}>
-                            <TouchableOpacity style={styles.button} onPress={() => {
-                                update()
-                            }}>
-                                <Text style={styles.text}>Cập nhật</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={[styles.button, { backgroundColor: '#201520' }]} onPress={() => {
-                                cancel()
-                            }}>
-                                <Text style={[styles.text, { color: '#EFE3C8' }]}>Huỷ đơn hàng</Text>
-                            </TouchableOpacity>
-                        </View>
+                        {
+                            data.status.status != 4 ? (
+                                <View>
+                                    <Text style={{
+                                        color: '#EFE3C8',
+                                        fontSize: 21,
+                                        fontWeight: 'bold',
+                                        marginTop: 10
+                                    }}>
+                                        Cập nhật trạng thái
+                                    </Text>
+                                    <Dropdown
+                                        style={styles.dropdown}
+                                        placeholderStyle={styles.receive_add_2}
+                                        selectedTextStyle={styles.receive_add_2}
+                                        inputSearchStyle={styles.receive_add_2}
+                                        itemTextStyle={styles.item_text}
+                                        iconColor='#EFE3C8'
+                                        data={listStatus}
+                                        maxHeight={300}
+                                        labelField="name"
+                                        valueField="_id"
+                                        placeholder="Chọn trạng thái"
+                                        value={status._id}
+                                        onChange={item => {
+                                            setNewStatus(item)
+                                        }}
+                                    />
+                                    <View style={styles.bottomLayout}>
+                                        <TouchableOpacity style={styles.button} onPress={() => {
+                                            update()
+                                        }}>
+                                            <Text style={styles.text}>Cập nhật</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={[styles.button, { backgroundColor: '#201520' }]} onPress={() => {
+                                            cancel()
+                                        }}>
+                                            <Text style={[styles.text, { color: '#EFE3C8' }]}>Huỷ đơn hàng</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            ) : (
+                                <View></View>
+                            )
+                        }
                     </View>
                 }
                 renderItem={({ item }) =>
