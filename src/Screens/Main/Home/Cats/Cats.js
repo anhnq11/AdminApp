@@ -295,60 +295,6 @@ const Cats = ({ navigation }) => {
                     </View>
                 </View>
             </Modal>
-            <Modal
-                visible={visible}
-                animationType='slide'
-                transparent={true}
-            >
-                <View style={{
-                    backgroundColor: '#201520',
-                    borderRadius: 10,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginTop: '50%',
-                    marginHorizontal: 30,
-                    borderWidth: 1,
-                    borderColor: '#EFE3C8',
-                    padding: 5,
-                }}>
-                    <Text style={{
-                        color: '#EFE3C8',
-                        fontSize: 21,
-                        fontWeight: 'bold',
-                    }}>Thêm loại sản phẩm</Text>
-                    <TextInput
-                        placeholder='Tên loại...'
-                        placeholderTextColor={'#EFE3C8'}
-                        style={styles.input}
-                        onChangeText={(text) => {
-                            setCatName(text)
-                            setError(null)
-                        }} />
-                    {
-                        error ? (<Text style={{
-                            fontSize: 17,
-                            color: 'red',
-                            fontStyle: 'italic',
-                            marginBottom: 10
-                        }}>{error}</Text>) : (<View></View>)
-                    }
-                    <View style={{
-                        width: '100%',
-                        flexDirection: 'row',
-                        justifyContent: 'space-around',
-                        alignItems: 'center',
-                    }}>
-                        <TouchableOpacity style={styles.button} onPress={() => setVisible(false)}>
-                            <Text style={styles.text}>
-                                Close
-                            </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.button} onPress={() => addCat()}>
-                            <Text style={styles.text}>OK</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </Modal>
         </View>
     )
 }

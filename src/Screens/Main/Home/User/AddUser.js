@@ -4,14 +4,14 @@ import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectUser } from '../../../../Redux/Reducer/Reducer'
 import { Dropdown } from 'react-native-element-dropdown'
+import RNFS from 'react-native-fs'
+import { launchImageLibrary } from 'react-native-image-picker'
 import URL from '../../../../UrlApi'
 import axios from 'axios'
+import { isEmail, isPhoneNumber } from '../../../../validate'
 
 const AddUser = ({ navigation }) => {
-
-    const user = useSelector(selectUser);
-    const dispatch = useDispatch();
-
+    
     const [image, setImage] = useState(null)
     const [fullname, setFullname] = useState(null)
     const [phonenum, setPhonenum] = useState(null)
@@ -32,6 +32,89 @@ const AddUser = ({ navigation }) => {
         }).catch((err) => {
             console.log(err);
         });
+    }
+
+    const pickImage = async () => {
+        launchImageLibrary({ mediaType: 'photo' }, async (result) => {
+            if (result.errorCode) {
+                console.log('ImagePicker Error: ', result.errorCode);
+            } else if (result.assets && result.assets.length > 0) {
+                const source = result.assets[0].uri;
+                let file_ext = source.substring(source.lastIndexOf('.') + 1);
+
+                try {
+                    const base64 = await RNFS.readFile(result.assets[0].uri, 'base64');
+                    setImage('data:image/' + file_ext + ';base64,' + base64);
+                } catch (error) {
+                    console.error('Error reading file as base64: ', error);
+                }
+            } else {
+                console.log('No assets selected');
+            }
+        });
+    };
+
+    const addUser = async () => {
+        setError(null)
+        if (fullname == null || phonenum == null || email == null || password == null || role == null) {
+            setError('Vui lòng điền đầy đủ thông tin!');
+            return
+        }
+
+        if (!isPhoneNumber(phonenum) || !isEmail(email)) {
+            setError('Số điện thoại hoặc Email không đúng định dạng!')
+            return
+        }
+
+        if (password.length < 8) {
+            setError('Mật khẩu phải nhiều hơn 8 ký tự!')
+            return
+        }
+
+        const data = {
+            fullname: fullname,
+            phonenum: phonenum,
+            email: email,
+            password: password,
+            id_role: role._id,
+            image: image
+        }
+
+        await axios({
+            method: 'get',
+            url: `${URL}users/checkRegis?phonenum=` + phonenum,
+        })
+            .then((res) => {
+                if (res.status !== 200) {
+                    console.log(res.status);
+                    setError('* Số điện thoại đã được sử dụng!')
+                    return;
+                }
+                else {
+                    axios({
+                        method: 'post',
+                        url: `${URL}users/regis`,
+                        data: JSON.stringify(data),
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                        .then((res) => {
+                            if (res.status == 200) {
+                                ToastAndroid.show('Thêm tài khoản mới thành công!', ToastAndroid.SHORT)
+                                navigation.goBack();
+                                return;
+                            }
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            })
     }
 
     React.useEffect(() => {
@@ -62,28 +145,30 @@ const AddUser = ({ navigation }) => {
                 }}>Thêm mới tài khoản</Text>
             </View>
             <View style={{ alignItems: 'center' }}>
-                <Image
-                    source={{ uri: 'https://th.bing.com/th/id/R.55393befef8a75d3a59d25ee7931d60f?rik=Dmwko1HbUCWZ7w&riu=http%3a%2f%2fgetdrawings.com%2ffree-icon%2fpowerpoint-user-icon-59.png&ehk=zkEtxliUAs%2fFgrsCJuqa4qWXNltwnt8b9%2fyMoGmWSYU%3d&risl=&pid=ImgRaw&r=0' }}
-                    style={{
-                        width: 100,
-                        height: 100,
-                        borderRadius: 100,
-                        marginTop: 30
-                    }}
-                />
-                <TouchableOpacity onPress={() => chooseImage()}>
+                <View>
                     <Image
-                        source={{ uri: "https://cdn1.iconfinder.com/data/icons/user-fill-icons-set/144/User003_Edit-512.png" }}
+                        source={{ uri: image ? image : 'https://th.bing.com/th/id/R.55393befef8a75d3a59d25ee7931d60f?rik=Dmwko1HbUCWZ7w&riu=http%3a%2f%2fgetdrawings.com%2ffree-icon%2fpowerpoint-user-icon-59.png&ehk=zkEtxliUAs%2fFgrsCJuqa4qWXNltwnt8b9%2fyMoGmWSYU%3d&risl=&pid=ImgRaw&r=0' }}
                         style={{
-                            width: 35,
-                            height: 35,
-                            tintColor: '#EFE3C8',
-                            position: 'absolute',
-                            bottom: -5,
-                            right: -5,
+                            width: 100,
+                            height: 100,
+                            borderRadius: 100,
+                            marginTop: 30
                         }}
                     />
-                </TouchableOpacity>
+                    <TouchableOpacity onPress={() => pickImage()}>
+                        <Image
+                            source={{ uri: "https://cdn1.iconfinder.com/data/icons/user-fill-icons-set/144/User003_Edit-512.png" }}
+                            style={{
+                                width: 35,
+                                height: 35,
+                                tintColor: '#EFE3C8',
+                                position: 'absolute',
+                                bottom: -5,
+                                right: 0,
+                            }}
+                        />
+                    </TouchableOpacity>
+                </View>
             </View>
             <Text style={{
                 width: '100%',
@@ -114,7 +199,7 @@ const AddUser = ({ navigation }) => {
                 style={styles.input}
                 onChangeText={(text) => { setFullname(text) }} />
             <TextInput
-                type="text"
+                keyboardType='number-pad'
                 placeholder='Số điện thoại...'
                 placeholderTextColor={'#EFE3C8'}
                 style={styles.input}
@@ -148,8 +233,8 @@ const AddUser = ({ navigation }) => {
                     setRole(item)
                 }}
             />
-            <TouchableOpacity style={styles.button} onPress={() => { handleUpdate() }}>
-                <Text style={styles.text}>Thêm</Text>
+            <TouchableOpacity style={styles.button} onPress={() => { addUser() }}>
+                <Text style={styles.text}>Thêm tài khoản</Text>
             </TouchableOpacity>
         </View>
     )
