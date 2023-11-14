@@ -1,8 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, TextInput, ToastAndroid } from 'react-native'
 import React from 'react'
 import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { selectUser } from '../../../../Redux/Reducer/Reducer'
 import { Dropdown } from 'react-native-element-dropdown'
 import RNFS from 'react-native-fs'
 import { launchImageLibrary } from 'react-native-image-picker'
@@ -11,7 +9,7 @@ import axios from 'axios'
 import { isEmail, isPhoneNumber } from '../../../../validate'
 
 const AddUser = ({ navigation }) => {
-    
+
     const [image, setImage] = useState(null)
     const [fullname, setFullname] = useState(null)
     const [phonenum, setPhonenum] = useState(null)
