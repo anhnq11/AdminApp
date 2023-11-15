@@ -17,7 +17,7 @@ const EditProducts = ({ route, navigation }) => {
     const [price, setPrice] = useState(data.price)
     const [desc, setDesc] = useState(data.desc)
     const [category, setCategory] = useState(data.id_cat)
-    const [isEnabled, setIsEnabled] = useState(false);
+    const [isEnabled, setIsEnabled] = useState(data.status);
     const [error, setError] = useState(null)
 
     const getListCats = () => {

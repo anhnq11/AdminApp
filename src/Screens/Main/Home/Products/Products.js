@@ -14,7 +14,7 @@ const Products = ({ navigation }) => {
         setIsLoading(true)
         axios({
             method: 'get',
-            url: `${URL}products/products`,
+            url: `${URL}products/allproducts`,
         }).then((res) => {
             if (res.status === 200) {
                 setData(res.data)
@@ -109,6 +109,7 @@ const Products = ({ navigation }) => {
                             }}>
                                 <Image style={{ width: '100%', height: '100%', resizeMode: 'center' }} source={{ uri: item.image }} />
                             </View>
+
                             <View>
                                 <Text style={{
                                     height: 26,
@@ -127,6 +128,11 @@ const Products = ({ navigation }) => {
                                     <Text style={{ color: '#EFE3C8' }}>Giá bán: </Text>
                                     {item.price.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')} VNĐ
                                 </Text>
+                                {
+                                    item.status & item.status == true ? (
+                                        <Text style={{ color: 'red', fontSize: 17 }}>* Dừng bán</Text>
+                                    ) : (<View></View>)
+                                }
                             </View>
                         </View>
                     }

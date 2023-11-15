@@ -98,15 +98,6 @@ const Profile = ({ navigation }) => {
           <TouchableOpacity style={styles.itemBox} onPress={() => navigation.navigate('AccountDetails')}>
             <Text style={styles.itemText}>Chi tiết tài khoản</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.itemBox} onPress={() => navigation.navigate('Address')}>
-            <Text style={styles.itemText}>Địa chỉ giao hàng</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.itemBox} onPress={() => navigation.navigate('OrderTracking')}>
-            <Text style={styles.itemText}>Theo dõi đơn hàng</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.itemBox} onPress={() => navigation.navigate('OrderHistory')}>
-            <Text style={styles.itemText}>Lịch sử mua hàng</Text>
-          </TouchableOpacity>
           <TouchableOpacity style={styles.itemBox}>
             <Text style={styles.itemText}>Cài đặt</Text>
           </TouchableOpacity>
