@@ -101,7 +101,7 @@ const AddUser = ({ navigation }) => {
                         .then((res) => {
                             if (res.status == 200) {
                                 ToastAndroid.show('Thêm tài khoản mới thành công!', ToastAndroid.SHORT)
-                                navigation.goBack();
+                                navigation.navigate('MainScr', { screen: 'Home' });
                                 return;
                             }
                         })

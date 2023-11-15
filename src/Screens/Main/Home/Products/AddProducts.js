@@ -4,6 +4,9 @@ import { useState } from 'react';
 import URL from '../../../../UrlApi';
 import axios from 'axios';
 import { Dropdown } from 'react-native-element-dropdown';
+import RNFS from 'react-native-fs'
+import { launchImageLibrary } from 'react-native-image-picker'
+
 const AddProducts = ({ navigation }) => {
 
     const [data, setData] = useState([])
@@ -26,6 +29,63 @@ const AddProducts = ({ navigation }) => {
         }).catch((err) => {
             console.log(err);
         });
+    }
+
+    const pickImage = async () => {
+        launchImageLibrary({ mediaType: 'photo' }, async (result) => {
+            if (result.errorCode) {
+                console.log('ImagePicker Error: ', result.errorCode);
+            } else if (result.assets && result.assets.length > 0) {
+                const source = result.assets[0].uri;
+                let file_ext = source.substring(source.lastIndexOf('.') + 1);
+
+                try {
+                    const base64 = await RNFS.readFile(result.assets[0].uri, 'base64');
+                    setImage('data:image/' + file_ext + ';base64,' + base64);
+                } catch (error) {
+                    console.error('Error reading file as base64: ', error);
+                }
+            } else {
+                console.log('No assets selected');
+            }
+        });
+    };
+
+    const addProducts = async () => {
+        setError(null)
+        if (name == null || price == null || category == null || desc == null || image == null) {
+            setError('Vui lòng điền đầy đủ thông tin!');
+            return
+        }
+
+        const data = {
+            name: name,
+            price: price,
+            id_cat: category._id,
+            desc: desc,
+            image: image,
+            createdAt: new Date().toLocaleString()
+        }
+
+        await axios({
+            method: 'post',
+            url: `${URL}products/products`,
+            data: JSON.stringify(data),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        })
+            .then((res) => {
+                if (res.status == 200) {
+                    ToastAndroid.show('Thêm sản phẩm mới thành công!', ToastAndroid.SHORT)
+                    navigation.navigate('MainScr', { screen: 'Home' });
+                    return;
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     }
 
     React.useEffect(() => {
@@ -57,27 +117,38 @@ const AddProducts = ({ navigation }) => {
             </View>
             <View style={{ alignItems: 'center', marginBottom: 10 }}>
                 <View>
-                    <Image
-                        source={{ uri: image ? image : 'https://th.bing.com/th/id/R.55393befef8a75d3a59d25ee7931d60f?rik=Dmwko1HbUCWZ7w&riu=http%3a%2f%2fgetdrawings.com%2ffree-icon%2fpowerpoint-user-icon-59.png&ehk=zkEtxliUAs%2fFgrsCJuqa4qWXNltwnt8b9%2fyMoGmWSYU%3d&risl=&pid=ImgRaw&r=0' }}
-                        style={{
-                            width: 100,
-                            height: 100,
-                            borderRadius: 100,
-                            marginTop: 30
-                        }}
-                    />
-                    <TouchableOpacity onPress={() => pickImage()}>
-                        <Image
-                            source={{ uri: "https://cdn1.iconfinder.com/data/icons/user-fill-icons-set/144/User003_Edit-512.png" }}
-                            style={{
-                                width: 35,
-                                height: 35,
-                                tintColor: '#EFE3C8',
-                                position: 'absolute',
-                                bottom: -5,
-                                right: 0,
-                            }}
-                        />
+                    <TouchableOpacity style={{
+                        justifyContent: 'center',
+                        borderRadius: 10,
+                        overflow: 'hidden',
+                    }}
+                        onPress={() => { pickImage() }}
+                    >
+                        {
+                            image
+                                ? (<View>
+                                    <Image style={{
+                                        width: 100,
+                                        height: 100,
+                                        resizeMode: 'cover'
+                                    }}
+                                        source={{ uri: image }} />
+                                </View>)
+                                : (<View>
+                                    <Text style={{
+                                        width: 100,
+                                        height: 100,
+                                        borderWidth: 1,
+                                        borderRadius: 10,
+                                        borderColor: '#EFE3C8',
+                                        borderStyle: 'dashed',
+                                        color: '#EFE3C8',
+                                        fontSize: 20,
+                                        textAlign: 'center',
+                                        textAlignVertical: 'center'
+                                    }}>Add a Image</Text>
+                                </View>)
+                        }
                     </TouchableOpacity>
                 </View>
             </View>
@@ -124,12 +195,12 @@ const AddProducts = ({ navigation }) => {
             <TextInput
                 placeholder='Mô tả sản phẩm...'
                 placeholderTextColor={'#EFE3C8'}
-                style={[ styles.input, { textAlignVertical: 'top'}]}
+                style={[styles.input, { textAlignVertical: 'top' }]}
                 multiline={true}
                 numberOfLines={4}
                 onChangeText={(text) => { setDesc(text) }} />
 
-            <TouchableOpacity style={styles.button} onPress={() => { addUser() }}>
+            <TouchableOpacity style={styles.button} onPress={() => { addProducts() }}>
                 <Text style={styles.text}>Thêm sản phẩm</Text>
             </TouchableOpacity>
         </View>
