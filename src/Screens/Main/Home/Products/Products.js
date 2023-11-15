@@ -8,21 +8,7 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 const Products = ({ navigation }) => {
 
     const [data, setData] = useState([])
-    const [listCats, setListCats] = useState([])
     const [isLoading, setIsLoading] = useState(false)
-
-    const getListCats = () => {
-        axios({
-            method: 'get',
-            url: `${URL}products/categories`,
-        }).then((res) => {
-            if (res.status === 200) {
-                setListCats(res.data)
-            }
-        }).catch((err) => {
-            console.log(err);
-        });
-    }
 
     const getData = () => {
         setIsLoading(true)
@@ -91,7 +77,7 @@ const Products = ({ navigation }) => {
                                 alignItems: 'center',
                             }}
                                 onPress={() => {
-
+                                    navigation.navigate('EditProducts', { data: item })
                                 }}
                             >
                                 <Image style={{

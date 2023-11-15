@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet, TouchableOpacity, Modal, TextInput, ToastAndroid } from 'react-native'
+import { View, Text, Image, StyleSheet, TouchableOpacity, Modal, TextInput, ToastAndroid, Switch } from 'react-native'
 import React from 'react'
 import { useState } from 'react';
 import URL from '../../../../UrlApi';
@@ -7,14 +7,17 @@ import { Dropdown } from 'react-native-element-dropdown';
 import RNFS from 'react-native-fs'
 import { launchImageLibrary } from 'react-native-image-picker'
 
-const AddProducts = ({ navigation }) => {
+const EditProducts = ({ route, navigation }) => {
+
+    const { data } = route.params
 
     const [listCats, setListCats] = useState([])
-    const [image, setImage] = useState(null)
-    const [name, setName] = useState(null)
-    const [price, setPrice] = useState(null)
-    const [desc, setDesc] = useState(null)
-    const [category, setCategory] = useState(null)
+    const [image, setImage] = useState(data.image)
+    const [name, setName] = useState(data.name)
+    const [price, setPrice] = useState(data.price)
+    const [desc, setDesc] = useState(data.desc)
+    const [category, setCategory] = useState(data.id_cat)
+    const [isEnabled, setIsEnabled] = useState(false);
     const [error, setError] = useState(null)
 
     const getListCats = () => {
@@ -57,19 +60,20 @@ const AddProducts = ({ navigation }) => {
             return
         }
 
-        const data = {
+        const updateData = {
+            _id: data._id,
             name: name,
             price: price,
             id_cat: category._id,
             desc: desc,
             image: image,
-            createdAt: new Date().toLocaleString()
+            status: isEnabled
         }
 
         await axios({
-            method: 'post',
+            method: 'put',
             url: `${URL}products/products`,
-            data: JSON.stringify(data),
+            data: JSON.stringify(updateData),
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -77,9 +81,11 @@ const AddProducts = ({ navigation }) => {
         })
             .then((res) => {
                 if (res.status == 200) {
-                    ToastAndroid.show('Thêm sản phẩm mới thành công!', ToastAndroid.SHORT)
+                    ToastAndroid.show('Cập nhật sản phẩm thành công!', ToastAndroid.SHORT)
                     navigation.navigate('MainScr', { screen: 'Home' });
                     return;
+                } else {
+                    ToastAndroid.show('Có lỗi xảy ra. Vui lòng thử lại!', ToastAndroid.SHORT)
                 }
             })
             .catch((error) => {
@@ -112,7 +118,7 @@ const AddProducts = ({ navigation }) => {
                     fontSize: 30,
                     fontWeight: 'bold',
                     textAlign: 'center'
-                }}>Thêm sản phẩm mới</Text>
+                }}>Chi tiết sản phẩm</Text>
             </View>
             <View style={{ alignItems: 'center', marginBottom: 10 }}>
                 <View>
@@ -168,12 +174,14 @@ const AddProducts = ({ navigation }) => {
                 placeholder='Tên sản phẩm...'
                 placeholderTextColor={'#EFE3C8'}
                 style={styles.input}
+                defaultValue={name}
                 onChangeText={(text) => { setName(text) }} />
             <TextInput
                 keyboardType='number-pad'
                 placeholder='Giá bán...'
                 placeholderTextColor={'#EFE3C8'}
                 style={styles.input}
+                defaultValue={price.toString()}
                 onChangeText={(text) => { setPrice(text) }} />
             <Dropdown
                 style={styles.input}
@@ -184,6 +192,7 @@ const AddProducts = ({ navigation }) => {
                 iconColor='#EFE3C8'
                 data={listCats}
                 maxHeight={300}
+                value={category._id}
                 labelField="name"
                 valueField="_id"
                 placeholder="Chọn loại sản phẩm"
@@ -194,19 +203,39 @@ const AddProducts = ({ navigation }) => {
             <TextInput
                 placeholder='Mô tả sản phẩm...'
                 placeholderTextColor={'#EFE3C8'}
+                defaultValue={desc}
                 style={[styles.input, { textAlignVertical: 'top' }]}
                 multiline={true}
                 numberOfLines={4}
                 onChangeText={(text) => { setDesc(text) }} />
-
-            <TouchableOpacity style={styles.button} onPress={() => { addProducts() }}>
-                <Text style={styles.text}>Thêm sản phẩm</Text>
+            <View style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginTop: 10,
+            }}>
+                <Text style={ styles.receive_add_2 }>Dừng bán sản phẩm:</Text>
+                <Switch
+                    trackColor={{ false: '#767577', true: '#81b0ff' }}
+                    thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
+                    ios_backgroundColor="#3e3e3e"
+                    onValueChange={() => {
+                        setIsEnabled(!isEnabled)
+                    }}
+                    value={isEnabled}
+                />
+            </View>
+            <TouchableOpacity style={styles.button} onPress={() => {
+                addProducts()
+                // console.log(category);
+            }}>
+                <Text style={styles.text}>Cập nhật</Text>
             </TouchableOpacity>
         </View>
     )
 }
 
-export default AddProducts
+export default EditProducts
 
 const styles = StyleSheet.create({
     container: {
