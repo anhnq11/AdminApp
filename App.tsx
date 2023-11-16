@@ -17,6 +17,7 @@ import AddUser from './src/Screens/Main/Home/User/AddUser';
 import Products from './src/Screens/Main/Home/Products/Products';
 import AddProducts from './src/Screens/Main/Home/Products/AddProducts';
 import EditProducts from './src/Screens/Main/Home/Products/EditProducts';
+import Statistics from './src/Screens/Main/Home/Statistics/Statistics';
 
 const Stack = createNativeStackNavigator();
 
@@ -40,6 +41,7 @@ function App(): JSX.Element {
           <Stack.Screen name="Products" component={Products} options={{ headerShown: false }} />
           <Stack.Screen name="AddProducts" component={AddProducts} options={{ headerShown: false }} />
           <Stack.Screen name="EditProducts" component={EditProducts} options={{ headerShown: false }} />
+          <Stack.Screen name="Statistics" component={Statistics} options={{ headerShown: false }} />
 
         </Stack.Navigator>
       </NavigationContainer>

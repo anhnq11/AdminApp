@@ -31,6 +31,11 @@ const Home = ({ navigation }) => {
       name: 'Thể loại',
       image: 'https://static.thenounproject.com/png/524455-200.png',
       navName: 'Cats'
+    },
+    {
+      name: 'Thống kê',
+      image: 'https://th.bing.com/th/id/R.62ceb3d1f64f7b5f2f96307caed868eb?rik=Z7kFZQz97RG34w&riu=http%3a%2f%2fcdn.onlinewebfonts.com%2fsvg%2fimg_530012.png&ehk=LsJqTrpLyDRYhphTAHQ5T2%2fMxKl1RnPP2tu%2bob%2fERrc%3d&risl=&pid=ImgRaw&r=0',
+      navName: 'Statistics'
     }
   ]
 
