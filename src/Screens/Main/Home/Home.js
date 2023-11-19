@@ -1,4 +1,4 @@
-import { View, Text, Image, ScrollView, FlatList, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, Image, ScrollView, FlatList, SafeAreaView, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import React from 'react'
 import { Dimensions } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -15,27 +15,32 @@ const Home = ({ navigation }) => {
     {
       name: 'Tài khoản',
       image: 'https://th.bing.com/th/id/R.128c99ebdee725b9e1c3c0390d98cd47?rik=9reRVopQkBduLg&riu=http%3a%2f%2fsimpleicon.com%2fdev%2fwp-content%2fuploads%2fmulty-user-256x256.png&ehk=Gw8vowbXpNWwiV2Vshi19CY72aO0rhLhkBfOPzqHpHc%3d&risl=&pid=ImgRaw&r=0',
-      navName: 'Users'
+      navName: 'Users',
+      isStaff: false
     },
     {
       name: 'Đơn hàng',
       image: 'https://cdn3.iconfinder.com/data/icons/rounded-monosign/142/invoice-1024.png',
       navName: 'Invoices',
+      isStaff: true
     },
     {
       name: 'Sản phẩm',
       image: 'https://th.bing.com/th/id/R.9747b37944b9692866892f0ce4788e09?rik=F%2fdIcjKlwvXy0Q&pid=ImgRaw&r=0',
-      navName: 'Products'
+      navName: 'Products',
+      isStaff: true
     },
     {
       name: 'Thể loại',
       image: 'https://static.thenounproject.com/png/524455-200.png',
-      navName: 'Cats'
+      navName: 'Cats',
+      isStaff: true
     },
     {
       name: 'Thống kê',
       image: 'https://th.bing.com/th/id/R.62ceb3d1f64f7b5f2f96307caed868eb?rik=Z7kFZQz97RG34w&riu=http%3a%2f%2fcdn.onlinewebfonts.com%2fsvg%2fimg_530012.png&ehk=LsJqTrpLyDRYhphTAHQ5T2%2fMxKl1RnPP2tu%2bob%2fERrc%3d&risl=&pid=ImgRaw&r=0',
-      navName: 'Statistics'
+      navName: 'Statistics',
+      isStaff: false
     }
   ]
 
@@ -83,7 +88,13 @@ const Home = ({ navigation }) => {
                 borderRadius: 15,
                 padding: 10
               }}
-              onPress={() => { navigation.navigate(item.navName)}}
+                onPress={() => {
+                  if (item.isStaff == false && user.id_role.level == 2) {
+                    Alert.alert('Thông báo', 'Bạn không có quyền thao tác chức năng này!');
+                  } else {
+                    navigation.navigate(item.navName)
+                  }
+                }}
               >
                 <Image style={{
                   width: 70,
