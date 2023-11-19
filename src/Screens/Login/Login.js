@@ -116,14 +116,14 @@ const Login = ({ navigation }) => {
           </View>
           <Text style={Style.loginLabel}>Đăng nhập với Facebook</Text>
         </TouchableOpacity>
-        <View style={{ flexDirection: 'row' }} >
+        {/* <View style={{ flexDirection: 'row' }} >
           <Text style={[Style.headerText, { fontSize: 17, fontWeight: 'normal' }]}>Bạn chưa có tài khoản</Text>
           <TouchableOpacity onPress={() => {
             navigation.navigate('Regis')
           }}>
             <Text style={[Style.headerText, { fontSize: 17, fontWeight: 'bold' }]}> Đăng ký</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
     </View>
   )

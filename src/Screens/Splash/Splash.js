@@ -21,7 +21,7 @@ const Splash = ({ navigation }) => {
         navigation.navigate('MainScr');
       }
       else {
-        navigation.navigate('Route');
+        navigation.navigate('Login');
       }
     }, 3000);
   }, []);
